@@ -1,3 +1,3 @@
-# INSTAGRAM DEMO
+# INSTAGRAM CLONE
 
-Lighweight instagram backend written in Go
+Lighweight instagram clone backend written in Go
