@@ -1,0 +1,284 @@
+openapi: 3.1.0
+x-stoplight:
+  id: z3mcbo7ebfnnk
+info:
+  title: instagram-backend
+  version: '1.0'
+  summary: instagram backend service public apis
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /users:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      operationId: get-users
+      description: get all the users
+    post:
+      summary: ''
+      operationId: post-users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userID:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                dataOfBirth:
+                  type: string
+                  format: date
+                handle:
+                  type: string
+              required:
+                - firstName
+                - lastName
+                - email
+                - dataOfBirth
+                - handle
+  '/users/{user_id}':
+    parameters:
+      - schema:
+          type: string
+        name: user_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      operationId: get-users-user_id
+    put:
+      summary: ''
+      operationId: put-users-user_id
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+    patch:
+      summary: ''
+      operationId: patch-users-user_id
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                handle:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+  '/users/{user_id}/follow':
+    parameters:
+      - schema:
+          type: string
+        name: user_id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-users-user_id-follow
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetUserID:
+                  type: string
+  '/users/{user_id}/unfollow':
+    parameters:
+      - schema:
+          type: string
+        name: user_id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-users-user_id-unfollow
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetUserID:
+                  type: string
+  '/users/{user_id}/timeline':
+    parameters:
+      - schema:
+          type: string
+        name: user_id
+        in: path
+        required: true
+    get:
+      summary: ''
+      operationId: get-users-user_id-timeline
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Media'
+  /media:
+    post:
+      summary: ''
+      operationId: post-media
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  postID:
+                    type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                userID:
+                  type: string
+                caption:
+                  type: string
+                fileName:
+                  type: string
+                  format: binary
+        description: ''
+      description: ''
+    delete:
+      summary: ''
+      operationId: delete-media
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postID:
+                  type: string
+      description: ''
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      examples:
+        - id: 142
+          firstName: Alice
+          lastName: Smith
+          email: alice.smith@gmail.com
+          dateOfBirth: '1997-10-31'
+          emailVerified: true
+          signUpDate: '2019-08-24'
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1997-10-31'
+        emailVerified:
+          type: boolean
+          description: Set to true if the user's email has been verified.
+        handle:
+          type: string
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - handle
+    Follower:
+      title: Follower
+      x-stoplight:
+        id: uftw8737ets3m
+      type: object
+      properties:
+        to:
+          type: string
+        from:
+          type: string
+      required:
+        - to
+        - from
+    Media:
+      title: Media
+      x-stoplight:
+        id: p5bcp1geg5vad
+      type: object
+      properties:
+        id:
+          type: string
+        userID:
+          type: string
+        caption:
+          type: string
+        uploadTime:
+          type: string
+          format: date-time
