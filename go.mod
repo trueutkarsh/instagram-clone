@@ -1,3 +1,3 @@
-module github.com/trueutkarsh/instagram-clone
+module instagram-clone
 
 go 1.19
