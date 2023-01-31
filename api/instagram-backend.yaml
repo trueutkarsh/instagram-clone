@@ -49,7 +49,7 @@ paths:
                 email:
                   type: string
                   format: email
-                dataOfBirth:
+                dateOfBirth:
                   type: string
                   format: date
                 handle:
