@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"instagram-clone/internal/routes"
+	"instagram-clone/internal/users"
 	"log"
-	"os/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -16,16 +16,16 @@ func main() {
 	// set up db
 	db, err := setupDB()
 	if err != nil {
-		// fmt.Printf("Connecting to db failed with err %s", err)
+		fmt.Printf("Connecting to db failed with err %s", err)
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	r := gin.Default()
 	// r.Group("/api")
-	routes.RegisterRoutes(r)
+	routes.RegisterRoutes(r, db)
 
-	r.Run()
+	log.Fatal(r.Run())
 }
 
 func setupDB() (*gorm.DB, error) {
@@ -36,7 +36,7 @@ func setupDB() (*gorm.DB, error) {
 
 	//Migrations
 	if err := db.AutoMigrate(
-		&user.User{},
+		&users.User{},
 	).Error; err != nil {
 		return nil, err
 	}
