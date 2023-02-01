@@ -1,7 +1,9 @@
 package users
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -39,6 +41,41 @@ func HandleCreateUser(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusCreated, createdUser)
+	}
+
+}
+
+func HandleGetUser(db *gorm.DB) gin.HandlerFunc {
+	service := New(db)
+	return func(c *gin.Context) {
+		user_id, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "invalid user id",
+			})
+			return
+		}
+
+		item, err := service.GetItem(uint(user_id))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]string{
+				"error":       err.Error(),
+				"description": fmt.Sprintf("Failed to retrieve user with user id %d", user_id),
+			})
+			return
+		}
+
+		if item == nil {
+			c.AbortWithStatusJSON(http.StatusNotFound, map[string]string{
+				"error":       "User not found",
+				"description": fmt.Sprintf("User with id %d does not exist", user_id),
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, item)
+
 	}
 
 }

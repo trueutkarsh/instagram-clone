@@ -17,4 +17,6 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	})
 	r.POST("/users", users.HandleCreateUser(db))
 
+	r.GET("/users/:user_id", users.HandleGetUser(db))
+
 }

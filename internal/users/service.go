@@ -10,6 +10,7 @@ import (
 
 type Service interface {
 	CreateItem(input *CreateUserInput) (*User, error)
+	GetItem(user_id uint) (*User, error)
 }
 
 type Client struct {
@@ -32,4 +33,9 @@ func (client *Client) CreateItem(input *CreateUserInput) (*User, error) {
 	}
 
 	return &user, client.DB.Create(&user).Error
+}
+
+func (client *Client) GetItem(user_id uint) (*User, error) {
+	user := User{}
+	return &user, client.DB.Find(&user, user_id).Error
 }
