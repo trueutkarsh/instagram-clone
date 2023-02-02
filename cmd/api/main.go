@@ -25,7 +25,7 @@ func main() {
 	// r.Group("/api")
 	routes.RegisterRoutes(r, db)
 
-	log.Fatal(r.Run())
+	log.Fatal(r.Run("localhost:3000"))
 }
 
 func setupDB() (*gorm.DB, error) {

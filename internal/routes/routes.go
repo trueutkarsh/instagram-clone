@@ -18,5 +18,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	r.POST("/users", users.HandleCreateUser(db))
 
 	r.GET("/users/:user_id", users.HandleGetUser(db))
+	r.PATCH("/users/:user_id", users.HandleUpdateItem(db))
+	r.PUT("/users/:user_id", users.HandleUpdateItem(db))
 
 }

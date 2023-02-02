@@ -79,3 +79,41 @@ func HandleGetUser(db *gorm.DB) gin.HandlerFunc {
 	}
 
 }
+
+func HandleUpdateItem(db *gorm.DB) gin.HandlerFunc {
+	service := New(db)
+	return func(c *gin.Context) {
+		user_id, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "invalid user id",
+			})
+			return
+		}
+
+		new_user := User{}
+		err = c.ShouldBindJSON(&new_user)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "failed to parse input from request",
+			})
+			return
+		}
+		// set primary key to zero value
+		new_user.ID = 0
+		err = service.UpdateItem(uint(user_id), &new_user)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": fmt.Sprintf("Failed to update user with ID %d", user_id),
+			})
+			return
+		}
+
+		c.Status(http.StatusOK)
+
+	}
+
+}
