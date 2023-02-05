@@ -107,6 +107,8 @@ paths:
                   type: string
                 handle:
                   type: string
+                emailVerified:
+                  type: boolean                  
                 dateOfBirth:
                   type: string
                   format: date

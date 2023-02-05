@@ -24,13 +24,14 @@ func New(db *gorm.DB) Service {
 
 func (client *Client) CreateItem(input *CreateUserInput) (*User, error) {
 	user := User{
-		FirstName:   input.FirstName,
-		LastName:    input.LastName,
-		Handle:      input.Handle,
-		DateOfBirth: input.DateOfBirth,
-		Email:       input.Email,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+		FirstName:      input.FirstName,
+		LastName:       input.LastName,
+		Handle:         input.Handle,
+		DateOfBirth:    input.DateOfBirth,
+		Email:          input.Email,
+		EmailVerfified: false,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
 	}
 
 	return &user, client.DB.Create(&user).Error
