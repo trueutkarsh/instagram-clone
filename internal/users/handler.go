@@ -4,18 +4,19 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
+
+	"instagram-clone/internal/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
 
 type CreateUserInput struct {
-	FirstName   string    `json:"firstName"`
-	LastName    string    `json:"lastName"`
-	Email       string    `json:"email"`
-	DateOfBirth time.Time `json:"dateOfBirth"`
-	Handle      string    `json:"handle"`
+	FirstName   string     `json:"firstName" binding:"required" `
+	LastName    string     `json:"lastName" binding:"required" `
+	Email       string     `json:"email" binding:"required" `
+	DateOfBirth utils.Date `json:"dateOfBirth" binding:"required" `
+	Handle      string     `json:"handle" binding:"required"`
 }
 
 func HandleCreateUser(db *gorm.DB) gin.HandlerFunc {
