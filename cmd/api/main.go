@@ -37,6 +37,7 @@ func setupDB() (*gorm.DB, error) {
 	//Migrations
 	if err := db.AutoMigrate(
 		&users.User{},
+		&users.Follower{},
 	).Error; err != nil {
 		return nil, err
 	}

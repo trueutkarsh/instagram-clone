@@ -12,6 +12,8 @@ type Service interface {
 	CreateItem(input *CreateUserInput) (*User, error)
 	GetItem(user_id uint) (*User, error)
 	UpdateItem(user_id uint, new_user *User) error
+	FollowUser(from uint, target uint) error
+	UnfollowUser(from uint, target uint) error
 }
 
 type Client struct {
@@ -45,4 +47,20 @@ func (client *Client) GetItem(user_id uint) (*User, error) {
 func (client *Client) UpdateItem(user_id uint, new_user *User) error {
 	old_user := User{ID: user_id}
 	return client.DB.Model(&old_user).Updates(new_user).Error
+}
+
+func (client *Client) FollowUser(from uint, target uint) error {
+	follower := Follower{
+		FromUserID:   from,
+		TargetUserID: target,
+	}
+	return client.DB.Create(follower).Error
+}
+
+func (client *Client) UnfollowUser(from uint, target uint) error {
+	follower := Follower{
+		FromUserID:   from,
+		TargetUserID: target,
+	}
+	return client.DB.Delete(follower).Error
 }

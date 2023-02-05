@@ -16,3 +16,8 @@ type User struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
+
+type Follower struct {
+	FromUserID   uint `gorm:"not null"`
+	TargetUserID uint `gorm:"not null"`
+}

@@ -21,4 +21,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	r.PATCH("/users/:user_id", users.HandleUpdateItem(db))
 	r.PUT("/users/:user_id", users.HandleUpdateItem(db))
 
+	r.POST("/users/:user_id/follow", users.HandleFollowUser(db))
+	r.POST("/users/:user_id/unfollow", users.HandleUnfollowUser(db))
+
 }

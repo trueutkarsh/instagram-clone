@@ -118,3 +118,97 @@ func HandleUpdateItem(db *gorm.DB) gin.HandlerFunc {
 	}
 
 }
+
+type FollowActionInput struct {
+	TargetUserID string `json:"targetUserID"`
+}
+
+func HandleFollowUser(db *gorm.DB) gin.HandlerFunc {
+	service := New(db)
+	return func(c *gin.Context) {
+		from_user_id, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "invalid user id",
+			})
+			return
+		}
+
+		input := FollowActionInput{}
+		err = c.ShouldBindJSON(&input)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "failed to parse input from request",
+			})
+			return
+		}
+
+		target_user_id, err := strconv.ParseUint(input.TargetUserID, 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "invalid target user id",
+			})
+			return
+		}
+
+		err = service.FollowUser(uint(from_user_id), uint(target_user_id))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": fmt.Sprintf("user %d unable to follow user %d", from_user_id, target_user_id),
+			})
+			return
+		}
+
+		c.Status(http.StatusOK)
+
+	}
+}
+
+func HandleUnfollowUser(db *gorm.DB) gin.HandlerFunc {
+	service := New(db)
+	return func(c *gin.Context) {
+		from_user_id, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "invalid user id",
+			})
+			return
+		}
+
+		input := FollowActionInput{}
+		err = c.ShouldBindJSON(&input)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "failed to parse input from request",
+			})
+			return
+		}
+
+		target_user_id, err := strconv.ParseUint(input.TargetUserID, 10, 64)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": "invalid target user id",
+			})
+			return
+		}
+
+		err = service.UnfollowUser(uint(from_user_id), uint(target_user_id))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+				"error":       err.Error(),
+				"description": fmt.Sprintf("user %d unable to follow user %d", from_user_id, target_user_id),
+			})
+			return
+		}
+
+		c.Status(http.StatusOK)
+
+	}
+}
