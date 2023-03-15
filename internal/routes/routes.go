@@ -12,7 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-func RegisterRoutes(r *gin.Engine, db *gorm.DB, sess *session.Session) {
+func RegisterRoutes(r *gin.Engine, db *gorm.DB, sess *session.Session, aws_env map[string]string) {
 
 	// Users
 	r.GET("/ping", func(c *gin.Context) {
@@ -27,6 +27,6 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB, sess *session.Session) {
 	r.POST("/users/:user_id/follow", users.HandleFollowUser(db))
 	r.POST("/users/:user_id/unfollow", users.HandleUnfollowUser(db))
 
-	r.POST("/media", media.HandleCreateMedia(db, sess))
+	r.POST("/media", media.HandleCreateMedia(db, sess, aws_env))
 
 }

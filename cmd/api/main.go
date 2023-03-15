@@ -13,6 +13,8 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -34,9 +36,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	aws_env, err := godotenv.Read("envs/aws_dev.env")
+	if err != nil {
+		fmt.Printf("Unable to load aws env variables")
+		log.Fatal(err)
+	}
+
 	r := gin.Default()
 	// r.Group("/api")
-	routes.RegisterRoutes(r, db, sess)
+	routes.RegisterRoutes(r, db, sess, aws_env)
 
 	log.Fatal(r.Run("localhost:3000"))
 }
@@ -61,12 +69,17 @@ func setupDB() (*gorm.DB, error) {
 
 func getDBargs() string {
 
+	db_env, err := godotenv.Read("envs/db_dev.env")
+	if err != nil {
+		log.Fatal("Unable to read DB env file")
+	}
+
 	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		"0.0.0.0",
-		"5432",
-		"postgres",
-		"instadb_dev",
-		"password",
+		db_env["DB_HOST"],
+		db_env["DB_PORT"],
+		db_env["DB_USER"],
+		db_env["DB_NAME"],
+		db_env["DB_PASSWORD"],
 	)
 
 }

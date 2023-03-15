@@ -13,7 +13,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func HandleCreateMedia(db *gorm.DB, sess *session.Session) gin.HandlerFunc {
+func HandleCreateMedia(db *gorm.DB, sess *session.Session, aws_env map[string]string) gin.HandlerFunc {
 	s3_svc := s3.New(sess)
 	db_svc := New(db)
 	return func(c *gin.Context) {
@@ -53,7 +53,7 @@ func HandleCreateMedia(db *gorm.DB, sess *session.Session) gin.HandlerFunc {
 		filekey := file.Filename
 
 		_, err = s3_svc.PutObject(&s3.PutObjectInput{
-			Bucket: aws.String("instagram-clone-images-bucket"),
+			Bucket: aws.String(aws_env["IMAGES_BUCKET"]),
 			Key:    &filekey,
 			Body:   data,
 			// ACL:    aws.String("public-read"),
@@ -72,8 +72,8 @@ func HandleCreateMedia(db *gorm.DB, sess *session.Session) gin.HandlerFunc {
 			Caption: caption,
 			URL: fmt.Sprintf(
 				"https://%s.s3-%s.amazonaws.com/%s",
-				"instagram-clone-images-bucket",
-				"ap-southeast-1",
+				aws_env["IMAGES_BUCKET"],
+				aws_env["AWS_REGION"],
 				filekey),
 		}
 
@@ -81,7 +81,7 @@ func HandleCreateMedia(db *gorm.DB, sess *session.Session) gin.HandlerFunc {
 		if err != nil {
 			// delete object from s3
 			s3_svc.DeleteObject(&s3.DeleteObjectInput{
-				Bucket: aws.String("instagram-clone-images-bucket"),
+				Bucket: aws.String(aws_env["IMAGES_BUCKET"]),
 				Key:    &filekey,
 			})
 

@@ -5,3 +5,5 @@ progress.md
 credentials/*
 
 .vscode/launch.json
+
+envs
