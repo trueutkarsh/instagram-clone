@@ -197,7 +197,7 @@ paths:
                   type: string
                 caption:
                   type: string
-                fileName:
+                file:
                   type: string
                   format: binary
         description: ''

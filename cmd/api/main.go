@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"instagram-clone/internal/media"
 	"instagram-clone/internal/routes"
 	"instagram-clone/internal/users"
 	"log"
@@ -9,6 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 )
 
 func main() {
@@ -21,9 +25,18 @@ func main() {
 	}
 	defer db.Close()
 
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String("ap-southeast-1"),
+	})
+
+	if err != nil {
+		fmt.Printf("Unable to create session with AWS %s", err)
+		log.Fatal(err)
+	}
+
 	r := gin.Default()
 	// r.Group("/api")
-	routes.RegisterRoutes(r, db)
+	routes.RegisterRoutes(r, db, sess)
 
 	log.Fatal(r.Run("localhost:3000"))
 }
@@ -38,6 +51,7 @@ func setupDB() (*gorm.DB, error) {
 	if err := db.AutoMigrate(
 		&users.User{},
 		&users.Follower{},
+		&media.Media{},
 	).Error; err != nil {
 		return nil, err
 	}

@@ -6,10 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 
+	"instagram-clone/internal/media"
 	"instagram-clone/internal/users"
+
+	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
+func RegisterRoutes(r *gin.Engine, db *gorm.DB, sess *session.Session) {
 
 	// Users
 	r.GET("/ping", func(c *gin.Context) {
@@ -23,5 +26,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 
 	r.POST("/users/:user_id/follow", users.HandleFollowUser(db))
 	r.POST("/users/:user_id/unfollow", users.HandleUnfollowUser(db))
+
+	r.POST("/media", media.HandleCreateMedia(db, sess))
 
 }
